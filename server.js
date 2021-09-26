@@ -122,7 +122,7 @@ const fetchKahootData = async (uuid) => {
   });
 };
 
-app.post('kahoot/joingame', async (req, res) => {
+app.post('/kahoot/joingame', async (req, res) => {
     try {
       let uuid = '';
       if (req.body.uuid) {
@@ -183,7 +183,7 @@ app.post('kahoot/joingame', async (req, res) => {
     }
   });
   
-  app.post('kahoot/searchuuid', async (req, res) => {
+  app.post('/kahoot/searchuuid', async (req, res) => {
     // https://create.kahoot.it/rest/kahoots/?query=sports
     try {
       const query = req.body.query;
