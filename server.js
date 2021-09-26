@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-app.get('/', (res, req) => {
+app.get('/', (req, res) => {
     res.send('Nothing to see here.')
 });
 
