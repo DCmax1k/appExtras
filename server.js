@@ -77,7 +77,7 @@ const scrapeDataFrom = async (scrapeID) => {
 }
 
 
-app.post('/epuzzle', async (req, res) => {
+app.post('/epuzzle/getdata', async (req, res) => {
     try {
         const data = await scrapeDataFrom(req.body.id);
         res.json({
