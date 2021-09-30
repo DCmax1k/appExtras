@@ -20,7 +20,7 @@ app.get('/', (req, res) => {
 });
 
 // Edpuzzle
-const scrapeDataFrom = async (scrapeID) => {
+const scrapeDataFrom = async (mediaID) => {
     // FIRST FROM URL: https://edpuzzle.com/api/v3/assignments/(code from url); data.teacherAssignments[0].contentID; then can get info from https://edpuzzle.com/api/v3/media/CONTENTID
     const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
     const page = await browser.newPage();
@@ -77,6 +77,8 @@ const scrapeDataFrom = async (scrapeID) => {
     //     title: data.title,
     //     img: data.thumbnailURL,
     // }
+
+
     await page.goto('https://edpuzzle.com/api/v3/media/' + mediaID, {
         waitUntil: 'networkidle2',
     });
@@ -94,6 +96,18 @@ const scrapeDataFrom = async (scrapeID) => {
         title: data.title,
         img: data.thumbnailURL,
     }
+
+  //   const initData = await request('https://edpuzzle.com/api/v3/media/' + mediaID, (error, response, html) => {
+  //     if (!error && response.statusCode == 200) {
+  //       const data = JSON.parse(html);
+
+  //       return {
+  //         questions: data.questions.sort((a, b) => a.time - b.time),
+  //         title: data.title,
+  //         img: data.thumbnailURL,
+  //     }
+  //   }
+  // });
 }
 
 
