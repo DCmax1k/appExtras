@@ -111,7 +111,7 @@ const scrapeDataFrom = async (mediaID) => {
 }
 
 
-app.post('/edpuzzle/getdata', async (req, res) => {
+app.post('/edpuzzle/getdata', cors(), async (req, res) => {
     try {
         const data = await scrapeDataFrom(req.body.mediaID);
         if (data.error) {
@@ -162,7 +162,7 @@ const fetchKahootData = async (uuid) => {
   });
 };
 
-app.post('/kahoot/joingame', async (req, res) => {
+app.post('/kahoot/joingame', cors(), async (req, res) => {
     try {
       let uuid = '';
       if (req.body.uuid) {
@@ -223,7 +223,7 @@ app.post('/kahoot/joingame', async (req, res) => {
     }
   });
   
-  app.post('/kahoot/searchuuid', async (req, res) => {
+  app.post('/kahoot/searchuuid', cors(), async (req, res) => {
     // https://create.kahoot.it/rest/kahoots/?query=sports
     try {
       const query = req.body.query;
