@@ -84,7 +84,7 @@ const scrapeDataFrom = async (mediaID) => {
     });
 
     const newhtml = await page.evaluate(() => {
-        return document.body.children[0].innerHTML;
+        return document.body.children[0].innerText;
     });
     const data = JSON.parse(newhtml);
     
