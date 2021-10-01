@@ -113,7 +113,7 @@ const scrapeDataFrom = async (mediaID) => {
 
 app.post('/edpuzzle/getdata', async (req, res) => {
     try {
-        const data = await scrapeDataFrom(req.body.id);
+        const data = await scrapeDataFrom(req.body.mediaID);
         if (data.error) {
           res.json({
             success: false,
