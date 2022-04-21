@@ -22,51 +22,19 @@ app.get('/', (req, res) => {
 // Edpuzzle
 const scrapeDataFrom = async (mediaID) => {
     // FIRST FROM URL: https://edpuzzle.com/api/v3/assignments/(code from url); data.teacherAssignments[0].contentID; then can get info from https://edpuzzle.com/api/v3/media/CONTENTID
-    const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
-    const page = await browser.newPage();
+    
+    // Using puppeteer
+    // const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+    // const page = await browser.newPage();
 
-    // Login to ADMIN ACCOUNT
-    // await page.goto('https://www.edpuzzle.com');
-
-  
-    // await page.click('.hidden-md.hidden-lg.fQ1t4fqKVH._3Zz5F9H2IZ');
-
-    // await page.click('._2w1-BNW32w._33wl7jxuFe._2oebyc6eFr._1NXfAQegcd._2TT-CHq6hp');
-
-    // await page.click('._33wl7jxuFe._1hmVhe2bx_._1NXfAQegcd._3Fkf7tortz');
-
-    // await page.type('#username', 'misunderstoodkillah@gmail.com');
-    // await page.type('#password', 'edpuzzlehack');
-    // await page.click('button[type=submit]');
-
-    // // wait for page to load
-    // await page.waitForNavigation( { waitUntil: 'networkidle2' } );
-
-    // // GET DATA FROM SCRAPE
-
-    // // FIRST FIND CONTENT ID
-    // await page.goto('https://edpuzzle.com/api/v3/assignments/' + scrapeID, {
-    //     waitUntil: 'networkidle2'
-    // });
-
-    // const html = await page.evaluate(() => {
-    //     return document.body.children[0].innerHTML;
-    // });
-    // const body = JSON.parse(html);
-    // if (body.error) {
-    //   console.error(body.error);
-    //   return body;
-    // }
-    // const contentID = body.teacherAssignments[0].contentId;
-
-    // GET SCRAPE DATA WITH NEW ID
-    // await page.goto('https://edpuzzle.com/api/v3/media/' + contentID, {
+    // await page.goto('https://edpuzzle.com/api/v3/media/' + mediaID, {
     //     waitUntil: 'networkidle2',
     // });
 
     // const newhtml = await page.evaluate(() => {
-    //     return document.body.children[0].innerHTML;
+    //     return document.body.children[0].innerText;
     // });
+
     // const data = JSON.parse(newhtml);
     
     
@@ -78,36 +46,18 @@ const scrapeDataFrom = async (mediaID) => {
     //     img: data.thumbnailURL,
     // }
 
-
-    await page.goto('https://edpuzzle.com/api/v3/media/' + mediaID, {
-        waitUntil: 'networkidle2',
-    });
-
-    const newhtml = await page.evaluate(() => {
-        return document.body.children[0].innerText;
-    });
-    const data = JSON.parse(newhtml);
-    
-    
-    await browser.close();
-
-    return {
-        questions: data.questions.sort((a, b) => a.time - b.time),
-        title: data.title,
-        img: data.thumbnailURL,
+    // Not using puppeteer
+    const initData = await request('https://edpuzzle.com/api/v3/media/' + mediaID, (error, response, html) => {
+      if (!error && response.statusCode == 200) {
+        const data = JSON.parse(html);
+        console.log(data);
+        return {
+          questions: data.questions.sort((a, b) => a.time - b.time),
+          title: data.title,
+          img: data.thumbnailURL,
+      }
     }
-
-  //   const initData = await request('https://edpuzzle.com/api/v3/media/' + mediaID, (error, response, html) => {
-  //     if (!error && response.statusCode == 200) {
-  //       const data = JSON.parse(html);
-
-  //       return {
-  //         questions: data.questions.sort((a, b) => a.time - b.time),
-  //         title: data.title,
-  //         img: data.thumbnailURL,
-  //     }
-  //   }
-  // });
+  });
 }
 
 
@@ -253,7 +203,7 @@ app.post('/kahoot/joingame', cors(), async (req, res) => {
   });
 
   app.get('/test', async (req, res) => {
-    let test = await scrapeDataFrom('61491a466126df4124869b88');
+    let test = await scrapeDataFrom('62615a6e9e696e429ff317af');
     res.send(test);
   })
 
