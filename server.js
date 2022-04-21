@@ -4,7 +4,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 // Edpuzzle
-const puppeteer = require('puppeteer');
+//const puppeteer = require('puppeteer');
 
 // Kahoot
 const request = require('request');
@@ -47,17 +47,25 @@ const scrapeDataFrom = async (mediaID) => {
     // }
 
     // Not using puppeteer
-    const initData = await request('https://edpuzzle.com/api/v3/media/' + mediaID, (error, response, html) => {
-      if (!error && response.statusCode == 200) {
-        const data = JSON.parse(html);
-        console.log(data);
-        return {
-          questions: data.questions.sort((a, b) => a.time - b.time),
-          title: data.title,
-          img: data.thumbnailURL,
-      }
+    let finalData;
+    try {
+      const initData = await request('https://edpuzzle.com/api/v3/media/' + mediaID, (error, response, html) => {
+        if (!error && response.statusCode == 200) {
+          const data = JSON.parse(html);
+          console.log('data, ', data)
+          finalData = {
+            questions: data.questions.sort((a, b) => a.time - b.time),
+            title: data.title,
+            img: data.thumbnailURL,
+         }
+        } else {
+          console.log(error);
+        }
+       });
+    } catch(err) {
+      console.error(err);
     }
-  });
+    return finalData;
 }
 
 
@@ -203,8 +211,13 @@ app.post('/kahoot/joingame', cors(), async (req, res) => {
   });
 
   app.get('/test', async (req, res) => {
-    let test = await scrapeDataFrom('62615a6e9e696e429ff317af');
-    res.send(test);
+    try {
+      let test = await scrapeDataFrom('62615a6e9e696e429ff317af');
+      console.log('final, ', test);
+      res.send(test);
+    } catch(err) {
+      console.error(err);
+    }
   })
 
   app.listen(process.env.PORT || 3000, () => {
