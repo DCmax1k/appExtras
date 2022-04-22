@@ -47,25 +47,20 @@ const scrapeDataFrom = async (mediaID) => {
     // }
 
     // Not using puppeteer
-    let finalData;
-    try {
-      const initData = await request('https://edpuzzle.com/api/v3/media/' + mediaID, (error, response, html) => {
-        if (!error && response.statusCode == 200) {
-          const data = JSON.parse(html);
-          console.log('data, ', data)
-          finalData = {
-            questions: data.questions.sort((a, b) => a.time - b.time),
-            title: data.title,
-            img: data.thumbnailURL,
-         }
-        } else {
-          console.log(error);
+    const initData = await request('https://edpuzzle.com/api/v3/media/' + mediaID, (error, response, html) => {
+      if (!error && response.statusCode == 200) {
+        const data = JSON.parse(html);
+        return {
+          questions: data.questions.sort((a, b) => a.time - b.time),
+          title: data.title,
+          img: data.thumbnailURL,
         }
-       });
-    } catch(err) {
-      console.error(err);
-    }
-    return finalData;
+      } else {
+        console.log(error);
+      }
+    });
+
+      return initData;
 }
 
 
