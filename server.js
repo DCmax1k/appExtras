@@ -21,6 +21,8 @@ app.get('/', (req, res) => {
 
 // Edpuzzle
 const scrapeDataFrom = async (mediaID) => {
+  try {
+
     // FIRST FROM URL: https://edpuzzle.com/api/v3/assignments/(code from url); data.teacherAssignments[0].contentID; then can get info from https://edpuzzle.com/api/v3/media/CONTENTID
     
     // Using puppeteer
@@ -47,20 +49,43 @@ const scrapeDataFrom = async (mediaID) => {
     // }
 
     // Not using puppeteer
-    const initData = await request('https://edpuzzle.com/api/v3/media/' + mediaID, (error, response, html) => {
-      if (!error && response.statusCode == 200) {
-        const data = JSON.parse(html);
-        return {
-          questions: data.questions.sort((a, b) => a.time - b.time),
-          title: data.title,
-          img: data.thumbnailURL,
-        }
-      } else {
-        console.log(error);
-      }
-    });
+    // let final = {};
+    // const initData = await request('https://edpuzzle.com/api/v3/media/' + mediaID, (error, response, html) => {
+    //   if (!error && response.statusCode == 200) {
+    //     const data = JSON.parse(html);
+    //     console.log('qs ', data.questions );
+    //     return final = {
+    //       questions: data.questions.sort((a, b) => a.time - b.time),
+    //       title: data.title,
+    //       img: data.thumbnailURL,
+    //     }
+    //   } else {
+    //     console.log(error);
+    //   }
+    // });
+    //   console.log(final);
+    //   return final;
 
-      return initData;
+      return new Promise(function (resolve, reject) {
+        request('https://edpuzzle.com/api/v3/media/' + mediaID, function (error, res, body) {
+          if (!error && res.statusCode == 200) {
+            const data = JSON.parse(body);
+            console.log('qs ', data.questions );
+            resolve({
+              questions: data.questions.sort((a, b) => a.time - b.time),
+              title: data.title,
+              img: data.thumbnailURL,
+            });
+          } else {
+            reject(error);
+          }
+        })
+      })
+
+
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 
